@@ -130,3 +130,6 @@ dmypy.json
 
 # Jetbrain IDE
 .idea/
+
+# Postgres data directory
+pgdata/
