@@ -51,9 +51,6 @@ class SessionManager(object):
         sess.close()
 
 
-session = SessionManager()
-
-
 def instrument(name):
     def do(self, *args, **kwargs):
         return getattr(self(), name)(*args, **kwargs)
@@ -98,3 +95,5 @@ def clslevel(name):
 
 for prop in ("close_all", "object_session", "identity_key"):
     setattr(SessionManager, prop, clslevel(prop))
+
+session = SessionManager()
