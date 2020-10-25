@@ -10,6 +10,12 @@ class Settings(BaseSettings):
     DB_NAME: str = "test"
     DB_URI: Optional[PostgresDsn] = None
 
+    ROOT_EMAIL = "root@example.com"
+    ROOT_PASSWORD = "password"
+
+    ORIGIN = "example.com"
+    CLIENT_SECRET = "secret"
+
     @validator("DB_URI", pre=True)
     def assemble_db_connection(cls, v: Optional[str],
                                values: Dict[str, Any]) -> Any:

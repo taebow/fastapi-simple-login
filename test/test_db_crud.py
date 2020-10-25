@@ -28,7 +28,7 @@ def test_create(session):
 def test_get():
     col1_value = "col1_value"
     instance = SampleModel.create(col1=col1_value)
-    found = SampleModel.get(instance.id)
+    found = SampleModel.get(field="id", value=instance.id)
 
     assert SampleModel.query.count() == 1
     assert found.col1 == col1_value
@@ -38,11 +38,10 @@ def test_get():
 def test_update():
     new_value = "new_value"
     instance = SampleModel.create(col1="old_value")
-    update = instance.update(col1=new_value)
-    found = SampleModel.get(instance.id)
+    SampleModel.update(field="id", value=instance.id, col1=new_value)
+    updated = SampleModel.get(field="id", value=instance.id)
 
-    assert update == instance
-    assert found.col1 == new_value
+    assert updated.col1 == new_value
 
 
 @pytest.mark.usefixtures("session")
@@ -50,7 +49,6 @@ def test_delete():
     col1_value = "col1_value"
     instance = SampleModel.create(col1=col1_value)
 
-    delete = instance.delete()
+    SampleModel.delete(field="id", value=instance.id)
 
-    assert delete is True
-    assert SampleModel.get(instance.id) is None
+    assert SampleModel.get(field="id", value=instance.id) is None
