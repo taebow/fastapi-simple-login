@@ -12,17 +12,12 @@ def configure_db(app):
 
 
 class DBSessionMiddleware(BaseHTTPMiddleware):
-    def __init__(
-        self,
-        app: ASGIApp
-    ):
+    def __init__(self, app: ASGIApp):
         super().__init__(app)
         self.session_manager = SessionManager()
 
     async def dispatch(
-        self,
-        request: Request,
-        call_next: RequestResponseEndpoint
+            self, request: Request, call_next: RequestResponseEndpoint
     ):
         with self.session_manager:
             response = await call_next(request)

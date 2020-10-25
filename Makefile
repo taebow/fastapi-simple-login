@@ -14,7 +14,7 @@ build-db-image:
 
 start-db: build-db-image
 	@docker container ls | grep ${image_name} \
-	|| docker run -d -p ${port}:5432 -v $(pwd)/pgdata:/var/lib/postgresql/data ${image_name}:latest > /dev/null
+	|| docker run -d -p ${port}:5432 -v $(shell pwd)/pgdata:/var/lib/postgresql/data ${image_name}:latest > /dev/null
 	@sleep 2
 	@echo "==> Database (postgresql) is running on port ${port}"
 

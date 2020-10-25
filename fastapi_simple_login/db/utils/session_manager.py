@@ -6,7 +6,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from fastapi_simple_login.config import settings
-from ..exception import MissingSessionError
+from fastapi_simple_login.exception import MissingSessionError
 
 _session: ContextVar[Optional[Session]] = ContextVar("_session", default=None)
 
