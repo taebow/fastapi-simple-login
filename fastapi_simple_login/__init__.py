@@ -4,7 +4,7 @@ from .middleware import configure_db
 from .endpoints import user, auth, resource
 from .db import bootstrap
 
-app = FastAPI()
+app = FastAPI(title="FastAPI Simple Login")
 
 configure_db(app)
 bootstrap()
