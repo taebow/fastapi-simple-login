@@ -79,3 +79,8 @@ make test
 **Testing endpoints**
 - GET /resource/public
 - GET /resource/protected
+
+
+**Authorization header**
+
+'Authorization" header == "Bearer \<token returned by login\>"
