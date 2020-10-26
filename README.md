@@ -1,4 +1,4 @@
-![ci](https://api.travis-ci.org/tteaka/fastapi-simple-login.svg?branch=main)
+[![travis-ci-build-status]][travis-ci]
 
 # fastapi-simple-login
 A fastapi simple user and login manager.
@@ -85,3 +85,6 @@ make test
 **Authorization header**
 
 'Authorization" header == "Bearer \<token returned by login\>"
+
+[travis-ci]: https://travis-ci.org/github/tteaka/fastapi-simple-login
+[travis-ci-build-status]: https://travis-ci.org/tteaka/fastapi-simple-login.svg?branch=main
