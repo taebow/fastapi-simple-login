@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from fastapi_simple_login.db import session as db_session, SessionManager
-from fastapi_simple_login.db import create_all, drop_all, bootstrap
+from fastapi_simple_login.db import create_all, drop_all
 from fastapi_simple_login import app
 from fastapi_simple_login.config import settings
 
