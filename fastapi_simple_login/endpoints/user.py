@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 
 from fastapi_simple_login.db import User
 from fastapi_simple_login.schema.user import (
@@ -8,12 +8,19 @@ from fastapi_simple_login.schema.user import (
 router = APIRouter()
 
 
-@router.get("/{email}", response_model=UserResponse)
+@router.get(
+    path="/{email}",
+    response_model=UserResponse
+)
 def get_user(email: str):
     return User.get(field="email", value=email)
 
 
-@router.post("", response_model=UserResponse)
+@router.post(
+    path="",
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED
+)
 def create_user(user: UserCreate):
     return User.create(
         email=user.email,
@@ -22,7 +29,10 @@ def create_user(user: UserCreate):
     )
 
 
-@router.put("/{email}")
+@router.put(
+    path="/{email}",
+    status_code=status.HTTP_204_NO_CONTENT
+)
 def update_user(email: str, user: UserUpdate):
     User.update(
         field="email",
@@ -31,11 +41,17 @@ def update_user(email: str, user: UserUpdate):
     )
 
 
-@router.delete("/{email}")
+@router.delete(
+    path="/{email}",
+    status_code=status.HTTP_204_NO_CONTENT
+)
 def delete_user(email: str):
     User.delete(field="email", value=email)
 
 
-@router.get("", response_model=List[UserResponse])
+@router.get(
+    path="",
+    response_model=List[UserResponse]
+)
 def index():
     return User.list()

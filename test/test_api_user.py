@@ -25,7 +25,7 @@ def test_create_user(client, email, password, name):
         "/users",
         json=dict(email=email, password=password, name=name)
     )
-    assert response.status_code == 200
+    assert response.status_code == 201
     test_user = response.json()
     assert len(test_user.keys()) == 3
     assert test_user["email"] == email
@@ -63,7 +63,8 @@ def test_list_users(client):
 ])
 def test_update_user(client, fields_update):
     rand_user_email = random.choice(client.get("/users").json())["email"]
-    client.put(f"/users/{rand_user_email}", json=fields_update)
+    response = client.put(f"/users/{rand_user_email}", json=fields_update)
+    assert response.status_code == 204
 
     email = fields_update.pop("email", rand_user_email)
 
@@ -80,7 +81,8 @@ def test_delete_user(client):
     initial_users = client.get("/users").json()
     rand_user_email = random.choice(initial_users)["email"]
 
-    client.delete(f"/users/{rand_user_email}")
+    response = client.delete(f"/users/{rand_user_email}")
+    assert response.status_code == 204
 
     final_users = client.get("/users").json()
 
