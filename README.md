@@ -57,12 +57,11 @@ make serve
  - password: password
 
 
-**Run the tests**
- 
+**Run the tests** 
 ```shell
 make test
 ```
-
+> :warning: This will wipe the database content.
 
 ## Endpoints:
 
