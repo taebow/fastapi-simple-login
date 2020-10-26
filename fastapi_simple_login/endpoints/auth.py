@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from fastapi_simple_login.db import User
 from fastapi.encoders import jsonable_encoder
@@ -11,16 +11,28 @@ from fastapi_simple_login.config import settings
 router = APIRouter()
 
 
-@router.post("/login")
-def login(email: str, password: str):
+from pydantic import BaseModel
+
+class LoginInput(BaseModel):
+    email: str
+    password: str
+
+
+class LoginOutput(BaseModel):
+    status: str
+    token: str
+
+
+@router.post("/login", response_model=LoginOutput)
+def login(login_input: LoginInput):
     now = datetime.utcnow()
 
-    if User.login(email, password, now):
-        return {"status": "ok", "token": create_token(email, now)}
+    if User.login(login_input.email, login_input.password, now):
+        return {"status": "ok", "token": create_token(login_input.email, now)}
 
-    return JSONResponse(
+    raise HTTPException(
         status_code=401,
-        content={"status": "unauthorized"}
+        detail="Unauthorized"
     )
 
 

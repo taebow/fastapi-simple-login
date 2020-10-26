@@ -1,12 +1,9 @@
 import random
 
-from fastapi.testclient import TestClient
 import pytest
 
 from fastapi_simple_login.db import SessionManager, User
-from fastapi_simple_login import app
 
-client = TestClient(app)
 
 test_sample = [
     ("test@example.com", "test_password", "Test user"),
@@ -23,9 +20,9 @@ def get_values(field):
 
 
 @pytest.mark.parametrize("email, password, name", test_sample)
-def test_create_user(email, password, name):
+def test_create_user(client, email, password, name):
     response = client.post(
-        "/users/",
+        "/users",
         json=dict(email=email, password=password, name=name)
     )
     assert response.status_code == 200
@@ -37,7 +34,7 @@ def test_create_user(email, password, name):
 
 
 @pytest.mark.parametrize("email, password, name", test_sample)
-def test_get_user(email, name, password):
+def test_get_user(client, email, name, password):
     response = client.get(f"/users/{email}")
     assert response.status_code == 200
     test_user = response.json()
@@ -47,8 +44,8 @@ def test_get_user(email, name, password):
     assert test_user["last_login"] is None
 
 
-def test_list_users():
-    response = client.get(f"/users/")
+def test_list_users(client):
+    response = client.get(f"/users")
     assert response.status_code == 200
     users = response.json()
     assert len(users) == 3
@@ -59,16 +56,16 @@ def test_list_users():
 
 
 @pytest.mark.parametrize("fields_update", [
-    {"email_update": "newemail@example.com"},
+    {"email": "newemail@example.com"},
     {"password": "newpassword"},
     {"name": "Changed name"},
-    {"email_update": "newemail2@example.com", "name": "Changed name2"}
+    {"email": "newemail2@example.com", "name": "Changed name2"}
 ])
-def test_update_user(fields_update):
-    rand_user_email = random.choice(client.get("/users/").json())["email"]
-    client.put("/users/", json=dict(**fields_update, email=rand_user_email))
+def test_update_user(client, fields_update):
+    rand_user_email = random.choice(client.get("/users").json())["email"]
+    client.put(f"/users/{rand_user_email}", json=fields_update)
 
-    email = fields_update.pop("email_update", rand_user_email)
+    email = fields_update.pop("email", rand_user_email)
 
     with SessionManager():
         updated_user = User.query.filter(User.email == email).first()
@@ -79,13 +76,13 @@ def test_update_user(fields_update):
     )
 
 
-def test_delete_user():
-    initial_users = client.get("/users/").json()
+def test_delete_user(client):
+    initial_users = client.get("/users").json()
     rand_user_email = random.choice(initial_users)["email"]
 
-    client.delete("/users/", json=dict(email=rand_user_email))
+    client.delete(f"/users/{rand_user_email}")
 
-    final_users = client.get("/users/").json()
+    final_users = client.get("/users").json()
 
     assert len(initial_users) - len(final_users) == 1
-    assert all(rand_user_email not in user for user in final_users)
+    assert all(rand_user_email != user["email"] for user in final_users)

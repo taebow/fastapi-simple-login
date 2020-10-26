@@ -3,9 +3,8 @@ from fastapi import APIRouter
 
 from fastapi_simple_login.db import User
 from fastapi_simple_login.schema.user import (
-    UserCreate, UserUpdate, UserDelete, UserResponse
+    UserCreate, UserUpdate, UserResponse
 )
-
 router = APIRouter()
 
 
@@ -14,7 +13,7 @@ def get_user(email: str):
     return User.get(field="email", value=email)
 
 
-@router.post("/", response_model=UserResponse)
+@router.post("", response_model=UserResponse)
 def create_user(user: UserCreate):
     return User.create(
         email=user.email,
@@ -23,22 +22,20 @@ def create_user(user: UserCreate):
     )
 
 
-@router.put("/")
-def update_user(user: UserUpdate):
-    update_values = dict(
-        email=user.email_update,
-        name=user.name,
-        password=user.password
+@router.put("/{email}")
+def update_user(email: str, user: UserUpdate):
+    User.update(
+        field="email",
+        value=email,
+        **{k: v for k, v in user if v is not None}
     )
-    update_values = {k: v for k, v in update_values.items() if v}
-    User.update(field="email", value=user.email, **update_values)
 
 
-@router.delete("/")
-def delete_user(user: UserDelete):
-    User.delete(field="email", value=user.email)
+@router.delete("/{email}")
+def delete_user(email: str):
+    User.delete(field="email", value=email)
 
 
-@router.get("/", response_model=List[UserResponse])
+@router.get("", response_model=List[UserResponse])
 def index():
-    return User.query.all()
+    return User.list()

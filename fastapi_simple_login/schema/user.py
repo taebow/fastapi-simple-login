@@ -13,13 +13,9 @@ class UserCreate(UserBase):
 
 
 class UserUpdate(UserBase):
-    email_update: Optional[str]
+    email: Optional[str]
     password: Optional[str]
     name: Optional[str]
-
-
-class UserDelete(BaseModel):
-    email: str
 
 
 class UserResponse(UserBase):
