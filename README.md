@@ -86,5 +86,10 @@ make test
 
 'Authorization" header == "Bearer \<token returned by login\>"
 
+## Additional info on implementation
+
+- Password is currently stored on its own in the database, no hash.
+
+
 [travis-ci]: https://travis-ci.org/github/tteaka/fastapi-simple-login
 [travis-ci-build-status]: https://travis-ci.org/tteaka/fastapi-simple-login.svg?branch=main
