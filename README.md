@@ -1,3 +1,5 @@
+![ci](https://api.travis-ci.org/tteaka/fastapi-simple-login.svg?branch=main)
+
 # fastapi-simple-login
 A fastapi simple user and login manager.
 
