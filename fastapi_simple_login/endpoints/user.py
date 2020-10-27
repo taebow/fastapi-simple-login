@@ -42,7 +42,7 @@ def create_user(user: UserCreate):
     path="/me",
     status_code=status.HTTP_204_NO_CONTENT
 )
-def update_user(
+def update_self_user(
     user_update: UserUpdate,
     user: UserResponse = Depends(get_current_user)
 ):
@@ -66,6 +66,14 @@ def update_user(email: str, user: UserUpdate):
 
 
 @router.delete(
+    path="/me",
+    status_code=status.HTTP_204_NO_CONTENT
+)
+def delete_self_user(user: UserResponse = Depends(get_current_user)):
+    User.delete(field="email", value=user.email)
+
+
+@router.delete(
     path="/{email}",
     status_code=status.HTTP_204_NO_CONTENT
 )
@@ -75,7 +83,7 @@ def delete_user(email: str):
 
 @router.get(
     path="",
-    response_model=List[UserResponse]
+    response_model=List[UserResponse] # noqa
 )
 def list_users():
     return User.list()
