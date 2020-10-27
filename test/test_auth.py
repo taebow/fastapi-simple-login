@@ -29,7 +29,7 @@ def test_root_login(client, root_email, root_password):
     assert response.status_code == 200
     json_response = response.json()
     assert len(json_response.keys()) == 2
-    assert json_response["status"] == "ok"
+    assert json_response["status"] == "Authorized"
     assert isinstance(json_response["token"], str)
 
     last_login = client.get(f"/users/{root_email}").json()["last_login"]

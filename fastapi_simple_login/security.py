@@ -1,6 +1,7 @@
-from typing import Optional
+from datetime import timedelta
 import jwt
-from fastapi import Header, Request, HTTPException, Depends
+from fastapi import Request, HTTPException, Depends
+from fastapi.encoders import jsonable_encoder
 from fastapi.security.base import SecurityBase, SecurityBaseModel
 from starlette import status as status_code
 
@@ -51,3 +52,21 @@ def get_current_user(token_dict: dict = Depends(email_password_auth)):
         )
 
     return user
+
+
+def create_token(email, now):
+    return jsonable_encoder(
+        jwt.encode(
+            dict(
+                sub=email,
+                iss=settings.ORIGIN,
+                iat=to_timestamp(now),
+                exp=to_timestamp(now+timedelta(days=14))
+            ),
+            settings.CLIENT_SECRET
+        )
+    )
+
+
+def to_timestamp(dt):
+    return str(int(dt.timestamp()))
