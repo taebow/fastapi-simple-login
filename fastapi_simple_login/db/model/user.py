@@ -25,7 +25,7 @@ class User(CRUD["Content"], Base):
         return cls.query.all()
 
     @classmethod
-    def login(cls, email: str, password: str, now: datetime) -> "User":
+    def login(cls, email: str, password: str, now: datetime) -> bool:
         validated = User.query \
             .filter(User.email == email) \
             .filter(User.password == password) \

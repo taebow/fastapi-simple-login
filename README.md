@@ -21,8 +21,6 @@ Only tested on Linux (Arch).
 
 ## Usage
 
-After having checked the requirements and ensured docker is running.
-
 **Install dependencies :**
 ```
 make install
@@ -35,7 +33,7 @@ make install
 make start-db
 ```
 
-*It build and run a docker image `db.dockerfile` that starts a Postgresql 
+*Build and run a docker image `db.dockerfile` that starts a Postgresql 
 server on port 5432.*
 
 
@@ -45,7 +43,7 @@ server on port 5432.*
 make serve
 ```
 
-*It run the server at http://localhost:8080*
+*Run the server at http://localhost:8080*
 
 
 **Interactive documentation**
