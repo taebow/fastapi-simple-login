@@ -25,29 +25,43 @@ def test_create_user(client, email, password, name):
         "/users",
         json=dict(email=email, password=password, name=name)
     )
+
     assert response.status_code == 201
-    test_user = response.json()
-    assert len(test_user.keys()) == 3
-    assert test_user["email"] == email
-    assert test_user["name"] == name
-    assert test_user["last_login"] is None
+
+    user = response.json()
+
+    with SessionManager():
+        db_user = User.query.filter(User.email == user["email"]).first()
+
+    assert len(user.keys()) == 3
+    assert user["email"] == email
+    assert user["name"] == name
+    assert user["last_login"] is None
+
+    assert db_user.password_hash is not None
 
 
 @pytest.mark.parametrize("email, password, name", test_sample)
 def test_get_user(client, email, name, password):
     response = client.get(f"/users/{email}")
+
     assert response.status_code == 200
-    test_user = response.json()
-    assert len(test_user.keys()) == 3
-    assert test_user["email"] == email
-    assert test_user["name"] == name
-    assert test_user["last_login"] is None
+
+    user = response.json()
+
+    assert len(user.keys()) == 3
+    assert user["email"] == email
+    assert user["name"] == name
+    assert user["last_login"] is None
 
 
 def test_list_users(client):
     response = client.get(f"/users")
+
     assert response.status_code == 200
+
     users = response.json()
+
     assert len(users) == 3
     assert all(len(user.keys()) == 3 for user in users)
     assert all(user["email"] in get_values("email") for user in users)
@@ -57,16 +71,16 @@ def test_list_users(client):
 
 @pytest.mark.parametrize("fields_update", [
     {"email": "newemail@example.com"},
-    {"password": "newpassword"},
     {"name": "Changed name"},
     {"email": "newemail2@example.com", "name": "Changed name2"}
 ])
 def test_update_user(client, fields_update):
-    rand_user_email = random.choice(client.get("/users").json())["email"]
-    response = client.put(f"/users/{rand_user_email}", json=fields_update)
+    user_email = random.choice(client.get("/users").json())["email"]
+    response = client.put(f"/users/{user_email}", json=fields_update)
+
     assert response.status_code == 204
 
-    email = fields_update.pop("email", rand_user_email)
+    email = fields_update.pop("email", user_email)
 
     with SessionManager():
         updated_user = User.query.filter(User.email == email).first()
@@ -77,14 +91,30 @@ def test_update_user(client, fields_update):
     )
 
 
+def test_update_user_password(client):
+    with SessionManager():
+        user = random.choice(User.query.all())
+
+    client.put(
+        f"/users/{user.email}",
+        json={"password": "a great new password"}
+    )
+
+    with SessionManager():
+        user_updated = User.query.get(user.id)
+
+    assert user.password_hash != user_updated.password_hash
+
+
 def test_delete_user(client):
     initial_users = client.get("/users").json()
-    rand_user_email = random.choice(initial_users)["email"]
+    user_email = random.choice(initial_users)["email"]
 
-    response = client.delete(f"/users/{rand_user_email}")
+    response = client.delete(f"/users/{user_email}")
+
     assert response.status_code == 204
 
     final_users = client.get("/users").json()
 
     assert len(initial_users) - len(final_users) == 1
-    assert all(rand_user_email != user["email"] for user in final_users)
+    assert all(user_email != user["email"] for user in final_users)

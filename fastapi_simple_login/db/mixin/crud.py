@@ -42,11 +42,13 @@ class CRUD(Generic[ModelType]):
     @classmethod
     def update(cls, field: str, value: Any, **kwargs) -> None:
         try:
-            if _get_query(cls, field, value).update(kwargs) > 1:
+            base_query = _get_query(cls, field, value)
+            if base_query.update(kwargs, synchronize_session=False) > 1:
                 raise UpdateError(cls, field, value, unique=False)
             session.commit()
             log.info(f"Updated {cls.__name__} with params {kwargs}")
         except SQLAlchemyError as e:
+            raise e
             raise UpdateError(cls, field, value, kwargs) from e
 
     @classmethod

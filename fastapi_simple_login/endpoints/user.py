@@ -37,7 +37,7 @@ def update_user(email: str, user: UserUpdate):
     User.update(
         field="email",
         value=email,
-        **{k: v for k, v in user if v is not None}
+        **user.dict()
     )
 
 
