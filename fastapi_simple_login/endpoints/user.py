@@ -1,11 +1,20 @@
 from typing import List
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 
 from fastapi_simple_login.db import User
 from fastapi_simple_login.schema.user import (
     UserCreate, UserUpdate, UserResponse
 )
+from fastapi_simple_login.security import get_current_user
 router = APIRouter()
+
+
+@router.get(
+    path="/me",
+    response_model=UserResponse
+)
+def get_self_user(user: UserResponse = Depends(get_current_user)):
+    return user
 
 
 @router.get(
@@ -26,6 +35,21 @@ def create_user(user: UserCreate):
         email=user.email,
         name=user.name,
         password=user.password
+    )
+
+
+@router.put(
+    path="/me",
+    status_code=status.HTTP_204_NO_CONTENT
+)
+def update_user(
+    user_update: UserUpdate,
+    user: UserResponse = Depends(get_current_user)
+):
+    User.update(
+        field="email",
+        value=user.email,
+        **user_update.dict()
     )
 
 
@@ -53,5 +77,5 @@ def delete_user(email: str):
     path="",
     response_model=List[UserResponse]
 )
-def index():
+def list_users():
     return User.list()
