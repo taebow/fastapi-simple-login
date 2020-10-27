@@ -34,9 +34,9 @@ def test_create_user(client, email, password, name):
         db_user = User.query.filter(User.email == user["email"]).first()
 
     assert len(user.keys()) == 3
-    assert user["email"] == email
-    assert user["name"] == name
-    assert user["last_login"] is None
+    assert user["email"] == db_user.email == email
+    assert user["name"] == db_user.name == name
+    assert user["last_login"] is db_user.last_login is None
 
     assert db_user.password_hash is not None
 

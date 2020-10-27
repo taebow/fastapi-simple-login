@@ -48,7 +48,6 @@ class CRUD(Generic[ModelType]):
             session.commit()
             log.info(f"Updated {cls.__name__} with params {kwargs}")
         except SQLAlchemyError as e:
-            raise e
             raise UpdateError(cls, field, value, kwargs) from e
 
     @classmethod
