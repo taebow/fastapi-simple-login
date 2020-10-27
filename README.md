@@ -63,14 +63,20 @@ make test
 ```
 > :warning: This will wipe the database content.
 
-## Endpoints:
+## Endpoints
 
-**User management :**
+**User management**
 - GET /users
 - POST /users
 - GET /users/\<email\>
 - PUT /users/\<email\>
 - DELETE /users/\<email\>
+
+**Self user**
+
+- GET /users/me
+- PUT /users/me
+- DELETE /users/me
 
 **Login**
 - POST /login
