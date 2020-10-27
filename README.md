@@ -91,5 +91,5 @@ make test
 - Password is currently stored on its own in the database, no hash.
 
 
-[travis-ci]: https://travis-ci.org/github/tteaka/fastapi-simple-login
-[travis-ci-build-status]: https://travis-ci.org/tteaka/fastapi-simple-login.svg?branch=main
+[travis-ci]: https://travis-ci.org/github/thibautfrain/fastapi-simple-login
+[travis-ci-build-status]: https://travis-ci.org/thibautfrain/fastapi-simple-login.svg?branch=main
