@@ -36,3 +36,4 @@ def root_email():
 def root_password():
     return settings.ROOT_PASSWORD
 
+
