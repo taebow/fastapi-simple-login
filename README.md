@@ -82,11 +82,16 @@ make test
 
 **Authorization header**
 
-'Authorization" header == "Bearer \<token returned by login\>"
+- Authorization: Bearer "token returned by `/login`\"
 
-## Additional info on implementation
 
-- Password is currently stored on its own in the database, no hash.
+**Additional implementation details**
+
+Use Postgresql `pgcrypto` and `uuid-oss` extensions for password hashes and uuid columns.
+
+- Password hashes are managed / checked in database.
+- Primary keys are generated using `uuid-oss extension`.
+
 
 
 [travis-ci]: https://travis-ci.org/github/thibautfrain/fastapi-simple-login
