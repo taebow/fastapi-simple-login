@@ -18,7 +18,7 @@ class Settings(BaseSettings):
 
     @validator("DB_URI", pre=True)
     def assemble_db_connection(
-        self, v: Optional[str], values: Dict[str, Any]
+        cls, v: Optional[str], values: Dict[str, Any] # noqa
     ) -> Any:
         if isinstance(v, str):
             return v

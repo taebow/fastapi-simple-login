@@ -6,7 +6,8 @@ from fastapi.security.base import SecurityBase, SecurityBaseModel
 from starlette import status as status_code
 
 from .config import settings
-from .db import User
+from .db import User, UserType
+from .schema.user import UserInDB
 
 
 class EmailPasswordAuth(SecurityBase):
@@ -52,6 +53,16 @@ def get_current_user(token_dict: dict = Depends(email_password_auth)):
         )
 
     return user
+
+
+def get_current_admin(current_user: UserInDB = Depends(get_current_user)):
+    if current_user.user_type != UserType.admin:
+        raise HTTPException(
+            status_code=status_code.HTTP_403_FORBIDDEN,
+            detail="Authentication error - you must be an admin user"
+        )
+
+    return current_user
 
 
 def create_token(email, now):

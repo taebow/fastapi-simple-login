@@ -3,7 +3,9 @@ from fastapi import APIRouter, Depends, status
 
 from fastapi_simple_login.db import User
 from fastapi_simple_login.schema import UserCreate, UserUpdate, UserResponse
-from fastapi_simple_login.security import get_current_user
+from fastapi_simple_login.security import (
+    get_current_user, get_current_admin
+)
 
 router = APIRouter()
 
@@ -37,7 +39,11 @@ def update_self_user(
     User.update(field="email", value=user.email, **user_update.dict())
 
 
-@router.put(path="/{email}", status_code=status.HTTP_204_NO_CONTENT)
+@router.put(
+    path="/{email}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_admin)]
+)
 def update_user(email: str, user: UserUpdate):
     User.update(field="email", value=email, **user.dict())
 
@@ -47,7 +53,11 @@ def delete_self_user(user: UserResponse = Depends(get_current_user)):
     User.delete(field="email", value=user.email)
 
 
-@router.delete(path="/{email}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    path="/{email}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_admin)]
+)
 def delete_user(email: str):
     User.delete(field="email", value=email)
 
