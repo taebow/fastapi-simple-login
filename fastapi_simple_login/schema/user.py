@@ -1,6 +1,11 @@
-from typing import Optional, List
+from enum import Enum
+from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
+
+class UserType(Enum):
+    standard = "standard"
+    admin = "admin"
 
 
 class UserBase(BaseModel):
@@ -24,3 +29,6 @@ class UserResponse(UserBase):
     class Config:
         orm_mode = True
 
+
+class UserInDB(UserResponse):
+    user_type: UserType

@@ -17,8 +17,9 @@ class Settings(BaseSettings):
     CLIENT_SECRET = "secret"
 
     @validator("DB_URI", pre=True)
-    def assemble_db_connection(cls, v: Optional[str],
-                               values: Dict[str, Any]) -> Any:
+    def assemble_db_connection(
+        cls, v: Optional[str], values: Dict[str, Any] # noqa
+    ) -> Any:
         if isinstance(v, str):
             return v
 

@@ -1,6 +1,5 @@
 import logging
 
-from fastapi import Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import IntegrityError
 
@@ -10,7 +9,7 @@ log = logging.getLogger(__name__)
 class ServerError(Exception):
     status_code = 500
 
-    def __init__(self, cause=None, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         if args:
             self.message = self.message.format(*args) # noqa
         if kwargs:
@@ -48,12 +47,11 @@ class DeleteError(CRUDOperationError):
 
 def configure_exc_handler(app):
     @app.exception_handler(ServerError)
-    async def exception_handler(request: Request, exc: ServerError):
+    async def exception_handler(_, exc: ServerError):
         status_code = exc.status_code
         message = exc.message
         cause = None
 
-        # To add
         if isinstance(exc.__cause__, IntegrityError):
             status_code = 403
             cause = "Duplicate resource error"

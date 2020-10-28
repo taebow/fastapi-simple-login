@@ -16,7 +16,10 @@ def login(login_input: LoginInput):
     now = datetime.utcnow()
 
     if User.login(login_input.email, login_input.password, now):
-        return {"status": "Authorized", "token": create_token(login_input.email, now)}
+        return {
+            "status": "Authorized",
+            "token": create_token(login_input.email, now)
+        }
 
     raise HTTPException(
         status_code=401,
