@@ -71,9 +71,15 @@ def create_token(email, now):
             dict(
                 sub=email,
                 iss=settings.ORIGIN,
-                iat=str(int(now.timestamp())),
-                exp=str(int((now+timedelta(days=14)).timestamp()))
+                iat=_to_timestamp_str(now),
+                exp=_to_timestamp_str(
+                    now+timedelta(days=settings.TOKEN_VALIDITY_DAYS)
+                )
             ),
             settings.CLIENT_SECRET
         )
     )
+
+
+def _to_timestamp_str(dt):
+    return str(int(dt.timestamp()))

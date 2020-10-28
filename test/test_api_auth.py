@@ -1,6 +1,9 @@
 from datetime import datetime, timedelta
 import pytest
 
+from fastapi_simple_login.config import settings
+from fastapi_simple_login.security import create_token
+
 invalid_passwords = ["no password", "invalid pass", "try again"]
 invalid_tokens = ["nothing", "Bearer super", None]
 
@@ -58,3 +61,22 @@ def test_login_fails_last_login_remain(
     last_login_after = get_last_login()
 
     assert last_login_before == last_login_after
+
+
+@pytest.mark.parametrize("days, expected_code", [
+    (settings.TOKEN_VALIDITY_DAYS + 1, 403),
+    (settings.TOKEN_VALIDITY_DAYS + 10, 403),
+    (settings.TOKEN_VALIDITY_DAYS - 1, 200),
+    (settings.TOKEN_VALIDITY_DAYS - 10, 200)
+])
+def test_login_fails_old_token(
+        client, login, root_email, root_token, days, expected_code
+):
+    old_date = datetime.utcnow() - timedelta(days=days)
+    response = client.get(
+        "/resource/protected",
+        headers={
+            "Authorization": f"Bearer {create_token(root_email, old_date)}"
+        }
+    )
+    assert response.status_code == expected_code

@@ -15,6 +15,7 @@ class Settings(BaseSettings):
 
     ORIGIN = "example.com"
     CLIENT_SECRET = "secret"
+    TOKEN_VALIDITY_DAYS = 14
 
     @validator("DB_URI", pre=True)
     def assemble_db_connection(
