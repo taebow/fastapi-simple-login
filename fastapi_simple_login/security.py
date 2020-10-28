@@ -60,13 +60,9 @@ def create_token(email, now):
             dict(
                 sub=email,
                 iss=settings.ORIGIN,
-                iat=to_timestamp(now),
-                exp=to_timestamp(now+timedelta(days=14))
+                iat=str(int(now.timestamp())),
+                exp=str(int((now+timedelta(days=14)).timestamp()))
             ),
             settings.CLIENT_SECRET
         )
     )
-
-
-def to_timestamp(dt):
-    return str(int(dt.timestamp()))

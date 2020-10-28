@@ -35,5 +35,3 @@ def root_email():
 @pytest.fixture(scope="session")
 def root_password():
     return settings.ROOT_PASSWORD
-
-
